@@ -1,7 +1,37 @@
 <?php
 
-// echo "test";
+session_start();
+//might need later when login page is available
+//if (!isset($_SESSION['user_id'])) {
+//    header("Location: login.php");
+//    exit;
+//}
+
+// Connect to database
+require_once 'includes/database.php';
+/** @var mysqli $connection */
+
+
+$query = "INSERT INTO animals (animal_type, danger_level, location, amount, reported_time)
+VALUES
+('Wild boar', 'dangerous', POINT(4.91, 52.37), 2, '2026-09-09 10:00:00'),
+('Deer', 'safe', POINT(4.89, 52.36), 1, '2026-09-09 12:00:00')";
+$result = mysqli_query($connection, $query);
+
+$query = "SELECT
+            animal_type,
+            danger_level,
+            ST_Y(location) AS lat,
+            ST_X(location) AS lng,
+            amount,
+            reported_time
+          FROM animals";
+$result = mysqli_query($connection, $query);
+
+$animals = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -65,23 +95,11 @@
     }).addTo(map);
 
     // Placeholder for wild animal markers
-    const animals = [{
-        name: "Wild Boar",
-        lat: 52.37,
-        lng: 4.91,
-        status: "Danger"
-    },
-        {
-            name: "Deer",
-            lat: 52.36,
-            lng: 4.89,
-            status: "Safe"
-        }
-    ];
+    const animals = <?= json_encode($animals) ?>;
 
     animals.forEach(animal => {
         L.marker([animal.lat, animal.lng]).addTo(map)
-            .bindPopup(`<b>${animal.name}</b><br>Status: ${animal.status}`);
+            .bindPopup(`<b>${animal.animal_type}</b><br>Danger level: ${animal.danger_level}<br>Amount: ${animal.amount}<br>Reported time: ${animal.reported_time}`);
     });
 </script>
 </body>
