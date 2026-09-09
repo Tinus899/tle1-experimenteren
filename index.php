@@ -85,23 +85,56 @@ $animals = mysqli_fetch_all($result, MYSQLI_ASSOC);
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
         crossorigin=""></script>
-<script>
-    // Initialize the map
-    const map = L.map('map').setView([52.3676, 4.9041], 13); // Default to Amsterdam
+    <script src="./js/main.js"></script>
+    <script>
+        const map = L.map('map').setView([52.3676, 4.9041], 9).locate({
+            setView: true,
+            maxZoom: 16
+        }); // Default to Amsterdam
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
 
-    // Add OpenStreetMap tiles
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
+        function onLocationFound(e) {
+            var radius = e.accuracy;
+            L.marker(e.latlng).addTo(map)
+                .bindPopup("You are within " + radius + " meters from this point").openPopup();
+            L.circle(e.latlng, radius).addTo(map);
 
-    // Placeholder for wild animal markers
-    const animals = <?= json_encode($animals) ?>;
+            addAnimalsToMap(e.latlng);
+        }
 
-    animals.forEach(animal => {
-        L.marker([animal.lat, animal.lng]).addTo(map)
-            .bindPopup(`<b>${animal.animal_type}</b><br>Danger level: ${animal.danger_level}<br>Amount: ${animal.amount}<br>Reported time: ${animal.reported_time}`);
-    });
-</script>
+        async function addAnimalsToMap(latlng) {
+            console.log(latlng.lat);
+            console.log(latlng.lng);
+            const animals = [];
+            const response = await fetchAnimals(latlng.lat, latlng.lng, 100000);
+
+            for (const animal of response) {
+                animals.push({
+                    animal_type: animal.animal_type,
+                    latitude: animal.latitude,
+                    longitude: animal.longitude,
+                    danger_level: animal.danger_level,
+                    reported_time: animal.reported_time
+                });
+            }
+
+            animals.forEach(animal => {
+                L.marker([animal.latitude, animal.longitude]).addTo(map)
+                    .bindPopup(`<b>${animal.animal_type}</b><br><i>${animal.reported_time}</i><br>Status: ${animal.danger_level}`);
+            });
+        }
+
+        function onLocationError(e) {
+            alert(e.message);
+        }
+
+        map.on('locationfound', onLocationFound);
+        map.on('locationerror', onLocationError);
+
+        // addAnimalsToMap();
+    </script>
 </body>
 
 </html>
