@@ -12,23 +12,23 @@ require_once 'includes/database.php';
 /** @var mysqli $connection */
 
 
-$query = "INSERT INTO animals (animal_type, danger_level, location, amount, reported_time)
-VALUES
-('Wild boar', 'dangerous', POINT(4.91, 52.37), 2, '2026-09-09 10:00:00'),
-('Deer', 'safe', POINT(4.89, 52.36), 1, '2026-09-09 12:00:00')";
-$result = mysqli_query($connection, $query);
+// $query = "INSERT INTO animals (animal_type, danger_level, location, amount, reported_time)
+// VALUES
+// ('Wild boar', 'dangerous', POINT(4.91, 52.37), 2, '2026-09-09 10:00:00'),
+// ('Deer', 'safe', POINT(4.89, 52.36), 1, '2026-09-09 12:00:00')";
+// $result = mysqli_query($connection, $query);
 
-$query = "SELECT
-            animal_type,
-            danger_level,
-            ST_Y(location) AS lat,
-            ST_X(location) AS lng,
-            amount,
-            reported_time
-          FROM animals";
-$result = mysqli_query($connection, $query);
+// $query = "SELECT
+//             animal_type,
+//             danger_level,
+//             ST_Y(location) AS lat,
+//             ST_X(location) AS lng,
+//             amount,
+//             reported_time
+//           FROM animals";
+// $result = mysqli_query($connection, $query);
 
-$animals = mysqli_fetch_all($result, MYSQLI_ASSOC);
+// $animals = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
 ?>
 
