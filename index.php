@@ -25,7 +25,7 @@
         </span>
         <span>Profile</span>
     </a>
-    <a href="#" class="nav-item">
+    <a href="#" class="nav-item right-gap">
         <span>
             <img src="images/family.svg" alt="Family Icon">
         </span>
@@ -37,7 +37,7 @@
         </span>
         <span>Map</span>
     </a>
-    <a href="#" class="nav-item">
+    <a href="#" class="nav-item left-gap">
         <span>
             <img src="images/animal-icon.svg" alt="Animal Icon">
         </span>
