@@ -4,7 +4,7 @@
 $host = "127.0.0.1";
 $user = "root";
 $password = "";
-$database = "animap";
+$database = "tle1-map-app";
 
 //Create connection
 $connection = mysqli_connect($host, $user, $password, $database);
